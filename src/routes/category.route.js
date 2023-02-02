@@ -1,6 +1,6 @@
 const express = require("express");
 const routing = express.Router();
-const ctrl = require("../controllers/category.controllers");
+const ctrl = require("../controllers/category.controller");
 // const validate = require("../middleware/validate")
 
 //CREATE --> POST
