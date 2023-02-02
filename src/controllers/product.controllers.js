@@ -1,10 +1,10 @@
-const category = {}
+const product = {}
 const models = require('../models/index.model.js')
 
-category.getAll = async (req, res) => {
+product.getAll = async (req, res) => {
     try {
-        const result = await models.category.findAll({
-            order: [["name_category", "ASC"]]
+        const result = await models.product.findAll({
+            order: [["createdAt", "DESC"]]
         });
         res.status(200).send({ message: "Success", result });
     } catch (err) {
@@ -12,20 +12,22 @@ category.getAll = async (req, res) => {
     }
 }
 
-category.addData = async (req, res) => {
+product.addData = async (req, res) => {
     try {
         const object = await (req.body)
-        const result = await models.category.create(object)
+        object.image_product = req.file.path
+        const result = await models.product.create(object)
         res.status(201).send({ message: "Success", result });
     } catch (err) {
         res.status(500).send({ status: "Error", message: err.message });
     }
 }
 
-category.updateData = async (req, res) => {
+product.updateData = async (req, res) => {
     try {
         const object = await (req.body)
-        const result = await models.category.update(object, {
+
+        const result = await models.product.update(object, {
             where: {
                 id: object.id
             }
@@ -36,9 +38,9 @@ category.updateData = async (req, res) => {
     }
 }
 
-category.removeData = async (req, res) => {
+product.removeData = async (req, res) => {
     try {
-        const result = await models.category.destroy({
+        const result = await models.product.destroy({
             where: {
                 id: req.params.id
             }
@@ -49,4 +51,4 @@ category.removeData = async (req, res) => {
     }
 }
 
-module.exports = category
+module.exports = product
