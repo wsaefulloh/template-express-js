@@ -4,6 +4,8 @@ const bcr = require("bcrypt")
 const passwordHash = require('../helpers/hash.helper')
 const { createToken, verifyToken } = require('../helpers/token.helper')
 const jwt = require("jsonwebtoken")
+const respone = require("../helpers/respone.helper")
+
 
 user.login = async (req, res) => {
     try {
@@ -16,13 +18,14 @@ user.login = async (req, res) => {
         console.log(req.query.username)
         if (check) {
             const result = await createToken(req.query.username, passUser)
-            res.status(200).send({ message: result.message, token: result.token });
+            return respone(res, 200, result)
         } else {
-            res.status(401).send({ status: "Error", message: "Sorry Username and Password Wrong!" });
+            return respone(res, 401, "Sorry Username and Password Wrong!")
         }
 
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
+
     }
 }
 
@@ -31,18 +34,24 @@ user.addData = async (req, res) => {
         const availableUsername = await models.user.findAll({
             where: { username: req.body.username },
         });
+
+        let checkSpace = (req.body.username).split(' ')
+
         if (availableUsername.length != 0) {
-            res.status(500).send({ status: "Error", message: "Username Already Use" });
-        } else {
+            return respone(res, 500, "Username Already Use")
+        } else if (checkSpace.length != 1) {
+            return respone(res, 500, "Your Username Containing Unavailable Character")
+        }
+        else {
             const passHash = await passwordHash(req.body.password)
             const object = await (req.body)
             object.password = passHash
             const result = await models.user.create(object)
-            res.status(201).send({ message: "Success", result });
+            return respone(res, 201, result)
         }
 
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
     }
 }
 
@@ -71,12 +80,12 @@ user.updateData = async (req, res) => {
                     id: oldPassFromDB[0].id
                 }
             })
-            res.status(201).send({ message: "Success", result });
+            return respone(res, 201, result)
         } else {
-            res.status(500).send({ status: "Error", message: "Your Old Password is Wrong" });
+            return respone(res, 500, "Your Old Password is Wrong")
         }
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
     }
 }
 

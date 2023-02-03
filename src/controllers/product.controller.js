@@ -1,14 +1,15 @@
 const product = {}
 const models = require('../models/index.model.js')
+const respone = require("../helpers/respone.helper")
 
 product.getAll = async (req, res) => {
     try {
         const result = await models.product.findAll({
             order: [["createdAt", "DESC"]]
         });
-        res.status(200).send({ message: "Success", result });
+        return respone(res, 200, result)
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
     }
 }
 
@@ -17,9 +18,9 @@ product.addData = async (req, res) => {
         const object = await (req.body)
         object.image_product = req.file.path
         const result = await models.product.create(object)
-        res.status(201).send({ message: "Success", result });
+        return respone(res, 201, result)
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
     }
 }
 
@@ -32,9 +33,9 @@ product.updateData = async (req, res) => {
                 id: object.id
             }
         })
-        res.status(201).send({ message: "Success", result });
+        return respone(res, 201, result)
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
     }
 }
 
@@ -45,9 +46,9 @@ product.removeData = async (req, res) => {
                 id: req.params.id
             }
         })
-        res.status(201).send({ message: "Success", result });
+        return respone(res, 200, result)
     } catch (err) {
-        res.status(500).send({ status: "Error", message: err.message });
+        return respone(res, 500, err)
     }
 }
 
