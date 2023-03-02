@@ -4,10 +4,10 @@ const respone = require("../helpers/respone.helper")
 
 product.getAll = async (req, res) => {
     try {
-        const result = await models.product.findAll({
+        const result_product = await models.product.findAll({
             order: [["createdAt", "DESC"]]
         });
-        return respone(res, 200, result)
+        return respone(res, 200, result_product)
     } catch (err) {
         return respone(res, 500, err)
     }
